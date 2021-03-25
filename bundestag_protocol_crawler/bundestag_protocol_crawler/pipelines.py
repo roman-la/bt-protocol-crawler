@@ -7,7 +7,7 @@ from itemadapter import ItemAdapter
 import pymongo
 
 
-class BtProtocolCrawlerPipeline:
+class BundestagProtocolCrawlerPipeline:
     def __init__(self):
         self.connection = pymongo.MongoClient('mongodb://localhost:27017')
         self.database = self.connection['bundestag']
