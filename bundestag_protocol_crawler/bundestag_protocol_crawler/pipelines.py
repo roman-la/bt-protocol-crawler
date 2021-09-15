@@ -3,18 +3,19 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
-from itemadapter import ItemAdapter
-import pymongo
+from pymongo import MongoClient
 
 
 class BundestagProtocolCrawlerPipeline:
     def __init__(self):
-        self.connection = pymongo.MongoClient('mongodb://localhost:27017')
-        self.database = self.connection['bundestag']
+        self.connection = MongoClient('mongodb://admin:pw@141.45.146.163:27017')
+        database = self.connection['protocols']
+        self.collection = database['19']
 
     def close_spider(self, spider):
         self.connection.close()
 
     def process_item(self, item, spider):
-        self.database['protocols'].insert_one(ItemAdapter(item).asdict())
+        if self.collection.find(item).count() == 0:
+            self.collection.insert_one(item)
         return item

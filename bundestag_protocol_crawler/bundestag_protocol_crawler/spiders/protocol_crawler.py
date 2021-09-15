@@ -1,6 +1,7 @@
 import scrapy
 import re
 import math
+from xml.etree import ElementTree
 
 
 class ProtocolCrawler(scrapy.Spider):
@@ -26,4 +27,7 @@ class ProtocolCrawler(scrapy.Spider):
 
     @staticmethod
     def __process_xml(response):
-        yield {'xml': response.body}
+        xml = response.body.decode('utf-8')
+        root = ElementTree.fromstring(xml)
+        session_id = root.find('.//sitzungsnr').text
+        yield {'session_id': session_id, 'xml': xml}
